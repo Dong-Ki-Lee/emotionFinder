@@ -67,7 +67,7 @@ class StdOutListener(StreamListener):
             return False
     def on_exception(self, exception):
         print(exception)
-        time.sleep(30)
+        time.sleep(1)
         return
 
 if __name__ == '__main__':
@@ -80,6 +80,6 @@ if __name__ == '__main__':
             stream.sample()
         except ProtocolError:
             print("protocol error")
-            time.sleep(30)
+            time.sleep(1)
         except KeyboardInterrupt:
             break
