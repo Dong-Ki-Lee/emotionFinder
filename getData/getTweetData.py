@@ -57,22 +57,29 @@ class StdOutListener(StreamListener):
             print("ATTR")
         return True
 
-    def on_error(self, status):
-        print("error : ")
-        print(status)
-        print("wait 10 minutes")
-        time.sleep(600)
-
+    def on_error(self, status_code):
+        if status_code == 420:
+            print("Too many connections. wait 10 minutes")
+            time.sleep(600)
+            TweeterCheckin()
+        else:
+            print(status_code)
+            return False
+    def on_exception(self, exception):
+        print(exception)
+        time.sleep(30)
+        return
 
 if __name__ == '__main__':
+    listener = StdOutListener()
+    auth = OAuthHandler(consumer_key, consumer_secret)
+    auth.set_access_token(access_token, access_token_secret)
+    stream = Stream(auth, listener)
     while(True):
-        listener = StdOutListener()
-        auth = OAuthHandler(consumer_key, consumer_secret)
-        auth.set_access_token(access_token, access_token_secret)
-        stream = Stream(auth, listener)
         try:
             stream.sample()
         except ProtocolError:
             print("protocol error")
-        except:
-            print("ev")
+            time.sleep(30)
+        except KeyboardInterrupt:
+            break
